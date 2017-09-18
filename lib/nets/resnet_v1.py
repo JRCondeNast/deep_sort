@@ -222,6 +222,7 @@ class resnetv1(Network):
     self._predictions["cls_prob"] = cls_prob
     self._predictions["bbox_pred"] = bbox_pred
     self._predictions["rois"] = rois
+    self._predictions["roi_pooling"] = fc7
 
     self._score_summaries.update(self._predictions)
 
