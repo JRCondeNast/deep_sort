@@ -81,14 +81,10 @@ def vis_detections(im_file, im, class_name, dets, thresh=0.5):
     plt.savefig(im_file)
 
 
-def demo(sess, net, frame_name,saveDirectory):
+def demo(sess, net, frame_name,saveDirectory,det_file):
     """Detect object classes in an image using pre-computed object proposals."""
-    # Check if save directory exists
-
-    if not os.path.exists(saveDirectory):
-        os.makedirs(saveDirectory)
     # Load the demo image
-    frame_file = os.path.join(cfg.DATA_DIR, 'demo', frame_name)
+    frame_file = os.path.join(cfg.DATA_DIR, 'video_sample_1', 'img1',frame_name)
     fra = cv2.imread(frame_file)
 
     # Detect all object classes and regress object bounds
@@ -113,29 +109,28 @@ def demo(sess, net, frame_name,saveDirectory):
         dets = dets[keep, :]
         object_features = roi_pooling[keep,:]
         # print(dets.shape)
-        save_name = im_file
+        save_name = frame_file
         """Draw detected bounding boxes."""
         inds = np.where(dets[:, -1] >= CONF_THRESH)[0]
         # print(inds)
         if len(inds) == 0:
             continue
-        im = im[:, :, (2, 1, 0)]
-        ax.imshow(im, aspect='equal')
-        with open(saveDirectory,'w') as file:
+        fra = fra[:, :, (2, 1, 0)]
+        ax.imshow(fra, aspect='equal')
+        with open(saveDirectory + '/' + det_file,'a') as f:
             for i in inds:
                 bbox = dets[i, :4]
                 # print(bbox)
                 score = dets[i, -1]
                 # print(score)
-
-                file.write(frame_name)
+                
+                f.write('{:s} '.format(frame_name))
                 for v_bbox in bbox:
-                     file.write("%d " % v_bbox)
-                for v_score in score:
-                     file.write("%.2f " % v_score)
+                     f.write("{:f} ".format(v_bbox))
+                f.write("{:.2f} ".format(score))
                 for v_roi_pooling in roi_pooling[i, :]:
-                     file.write("%.2f " % v_roi_pooling)
-                file.write('\n')
+                     f.write("{:.2f} ".format(v_roi_pooling))
+                f.write('\n')
 
                 ax.add_patch(
                     plt.Rectangle((bbox[0], bbox[1]),
@@ -223,10 +218,15 @@ if __name__ == '__main__':
     #            '001763.jpg', '004545.jpg']
     saveDirectory = args.saveDirectory
     video_frames_directory = args.video
+    det_file = 'det.txt'
     frames = [file for file in os.listdir(video_frames_directory)]
     for frame in frames:
+        print(frame)
+        print(saveDirectory)
         print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
-        print('Demo for data/demo/{}'.format(im_name))
-        demo(sess, net, frame,saveDirectory)
-
+        print('Demo for data/demo/{}'.format(frame))
+        try:
+           demo(sess, net, frame,saveDirectory,det_file)
+        except AttributeError:
+           continue
     plt.show()

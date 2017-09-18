@@ -382,10 +382,10 @@ class Network(object):
     cls_score, cls_prob, bbox_pred, rois, roi_pooling = sess.run([self._predictions["cls_score"],
                                                      self._predictions['cls_prob'],
                                                      self._predictions['bbox_pred'],
-                                                     self._predictions['rois']],
-                                                     self._predictions['roi_pooling'],
-                                                    feed_dict=feed_dict)
-    return cls_score, cls_prob, bbox_pred, rois
+                                                     self._predictions['rois'],
+                                                     self._predictions['roi_pooling']],
+                                                     feed_dict=feed_dict)
+    return cls_score, cls_prob, bbox_pred, rois,roi_pooling
 
   def get_summary(self, sess, blobs):
     feed_dict = {self._image: blobs['data'], self._im_info: blobs['im_info'],

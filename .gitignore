@@ -7,6 +7,11 @@ __pycache__/
 *.so
 
 # Distribution / packaging
+data
+res
+MOT16
+resources
+video_sample_1
 .Python
 env/
 build/
@@ -15,7 +20,6 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
 lib64/
 parts/
 sdist/
