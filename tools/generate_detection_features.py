@@ -163,6 +163,31 @@ def demo(sess, net, frame_name,saveDirectory,det_file):
         # vis_detections(save_name,im, cls, dets, thresh=CONF_THRESH)
         # im = cv2.imread(save_name)
 
+def prepare_det_files(input_file, output_file_1, output_file_2):
+    if not os.path.exists(input_file):
+        print('File dose not exists.')
+
+    n_detections = 0
+    with open(input_file,'r') as f:
+        for i, l in enumerate(f):
+            n_detections = n_detections + 1
+    n_detections += 1
+
+    complete_data = np.zeros(n_detections, 1034)
+    with open(input_file,'r') as f:
+        for i, l in enumerate(f):
+            line = f.readline()
+            det = line.split(' ')
+            complete_data[i,:] = det
+    np.save(output_file_1,complete_data)
+
+    partial_data = complete_data[:,0:10]
+
+    with open(output_file_2,'w') as out2:
+        for det in partial_data:
+            for v_det in det:
+                out2.write('{} '.format(v_det))
+            out2.write('\n')
 
 def parse_args():
     """Parse input arguments."""

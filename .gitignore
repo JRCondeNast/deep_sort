@@ -9,7 +9,7 @@ __pycache__/
 # Distribution / packaging
 data
 res
-MOT16
+data/MOT16
 resources
 video_sample_1
 .Python
