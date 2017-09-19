@@ -84,7 +84,7 @@ def vis_detections(im_file, im, class_name, dets, thresh=0.5):
 def demo(sess, net, frame_name,saveDirectory,det_file):
     """Detect object classes in an image using pre-computed object proposals."""
     # Load the demo image
-    frame_file = os.path.join(cfg.DATA_DIR, 'video_sample_1', 'img1',frame_name)
+    frame_file = os.path.join(cfg.DATA_DIR, 'runway1', 'img1',frame_name)
     fra = cv2.imread(frame_file)
 
     # Detect all object classes and regress object bounds
@@ -95,7 +95,7 @@ def demo(sess, net, frame_name,saveDirectory,det_file):
     print('Detection took {:.3f}s for {:d} object proposals'.format(timer.total_time, boxes.shape[0]))
 
     # Visualize detections for each class
-    CONF_THRESH = 0.8
+    CONF_THRESH = 0.7
     NMS_THRESH = 0.3
     fig, ax = plt.subplots(figsize=(12, 12))
     for cls_ind, cls in enumerate(CLASSES[1:]):
@@ -123,11 +123,12 @@ def demo(sess, net, frame_name,saveDirectory,det_file):
                 # print(bbox)
                 score = dets[i, -1]
                 # print(score)
-                
-                f.write('{:s} '.format(frame_name))
+                f.write('{:s} '.format(frame_name.split('.')[0]))
+                f.write('{:d} '.format(-1))
                 for v_bbox in bbox:
-                     f.write("{:f} ".format(v_bbox))
+                     f.write("{:d} ".format(int(v_bbox)))
                 f.write("{:.2f} ".format(score))
+                f.write('{:d} {:d} {:d} '.format(-1,-1,-1))
                 for v_roi_pooling in roi_pooling[i, :]:
                      f.write("{:.2f} ".format(v_roi_pooling))
                 f.write('\n')
