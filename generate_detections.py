@@ -397,13 +397,15 @@ def generate_detections(encoder, mot_dir, output_dir, detection_dir=None):
         sequence_dir = os.path.join(mot_dir, sequence)
 
         image_dir = os.path.join(sequence_dir, "img1")
+        print(image_dir)
         image_filenames = {
             int(os.path.splitext(f)[0]): os.path.join(image_dir, f)
             for f in os.listdir(image_dir)}
 
         detection_file = os.path.join(
             detection_dir, sequence, "det/det.txt")
-        detections_in = np.loadtxt(detection_file, delimiter=',')
+        print(detection_file)
+        detections_in = np.loadtxt(detection_file, delimiter=',',usecols=range(10))
         detections_out = []
 
         frame_indices = detections_in[:, 0].astype(np.int)

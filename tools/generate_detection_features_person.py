@@ -34,12 +34,10 @@ import argparse
 from nets.vgg16 import vgg16
 from nets.resnet_v1 import resnetv1
 
-CLASSES = (
-'__background__', 'sunglasses', 'pants', 'jeans', 'shirt', 'tie', 'suit', 'shoes', 'skirt', 'jacket', 'dress', 'coat',
-'shorts')
-NETS = {'res101': ('res101_faster_rcnn_iter_490000.ckpt',)}
-DATASETS = {'visual_genome': ('visual_genome_categories_1_train_490000_0.003',)}
+CLASSES = ('__background__','person','bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat', 'traffic light', 'fire hydrant', 'stop sign', 'parking meter', 'bench', 'bird', 'cat', 'dog', 'horse', 'sheep', 'cow', 'elephant', 'bear', 'zebra', 'giraffe', 'backpack', 'umbrella', 'handbag', 'tie', 'suitcase', 'frisbee', 'skis', 'snowboard', 'sports ball', 'kite', 'baseball bat', 'baseball glove', 'skateboard', 'surfboard', 'tennis racket', 'bottle', 'wine glass', 'cup', 'fork', 'knife', 'spoon', 'bowl', 'banana', 'apple', 'sandwich', 'orange', 'broccoli', 'carrot', 'hot dog', 'pizza', 'donut', 'cake', 'chair', 'couch', 'potted plant', 'bed', 'dining table', 'toilet', 'tv', 'laptop', 'mouse', 'remote', 'keyboard', 'cell phone', 'microwave', 'oven', 'toaster', 'sink', 'refrigerator', 'book', 'clock', 'vase', 'scissors', 'teddy bear', 'hair drier', 'toothbrush')
 
+NETS = {'vgg16': ('vgg16_faster_rcnn_iter_1190000.ckpt',),'res101': ('res101_faster_rcnn_iter_1190000.ckpt',)}
+DATASETS= {'coco_2014': ('coco_2014_train+coco_2014_valminusminival',)}
 
 def vis_detections(im_file, im, class_name, dets, thresh=0.5):
     """Draw detected bounding boxes."""
@@ -98,7 +96,7 @@ def demo(sess, net, frame_name,v_fram_dir,saveDirectory,det_file):
     CONF_THRESH = 0.8
     NMS_THRESH = 0.3
     fig, ax = plt.subplots(figsize=(12, 12))
-    for cls_ind, cls in enumerate(CLASSES[1:]):
+    for cls_ind, cls in enumerate(CLASSES[2]):
         cls_ind += 1  # because we skipped background
         cls_boxes = boxes[:, 4 * cls_ind:4 * (cls_ind + 1)]
         cls_scores = scores[:, cls_ind]
@@ -200,7 +198,7 @@ def parse_args():
     parser.add_argument('--net', dest='demo_net', help='Network to use [vgg16 res101]',
                         choices=NETS.keys(), default='res101')
     parser.add_argument('--dataset', dest='dataset', help='Trained dataset [pascal_voc pascal_voc_0712]',
-                        choices=DATASETS.keys(), default='visual_genome')
+                        choices=DATASETS.keys(), default='coco_2014')
     parser.add_argument('--video', dest='video', help='Path to the video folder')
     parser.add_argument('--saveDirectory', dest='saveDirectory', help='Path to save object embeddings')
     args = parser.parse_args()
@@ -236,8 +234,8 @@ if __name__ == '__main__':
         net = resnetv1(batch_size=1, num_layers=101)
     else:
         raise NotImplementedError
-    net.create_architecture(sess, "TEST", 13,
-                            tag='default', anchor_scales=[2, 4, 8, 16, 32], anchor_ratios=[0.25, 0.5, 1, 2, 4])
+    net.create_architecture(sess, "TEST", 81,
+                            tag='default', anchor_scales=[4, 8, 16, 32])
 
     # saver = tf.train.import_meta_graph(tfmodel + '.meta')
     # saver.restore(sess, tfmodel)
